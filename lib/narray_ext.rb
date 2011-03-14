@@ -6,29 +6,57 @@
 #  under the same terms as Ruby itself.
 #  NO WARRANTY.
 #
+
 class NArray
+
+  #
+  # Returns true if the type of the NArray is an integral type.
+  # (NArray::BYTE, NArray::SINT, NArray::LINT)
+  #
 
   def integer?
     self.typecode==NArray::BYTE ||
     self.typecode==NArray::SINT ||
     self.typecode==NArray::LINT
   end
+
+  #
+  # Returns true if the type of the NArray is a complex type.
+  # (NArray::DCOMPLEX, NArray::SCOMPLEX)
+  #
+
   def complex?
     self.typecode==NArray::DCOMPLEX ||
     self.typecode==NArray::SCOMPLEX
   end
 
+  #
+  # Returns true if all elements are 'true'.
+  #
+
   def all?
     where.size == size
   end
+
+  #
+  # Returns true if any element is 'true'.
+  #
 
   def any?
     where.size > 0
   end
 
+  #
+  # Returns true if none of the elements are 'true'.
+  #
+
   def none?
     where.size == 0
   end
+
+  #
+  # Obsolete?
+  #
 
   def ==(other)
     if other.kind_of?(NArray)
@@ -37,7 +65,8 @@ class NArray
       false
     end
   end
-
+  
+  # :nodoc:
   def rank_total(*ranks)
     if ranks.size>0
       idx = []
@@ -52,6 +81,7 @@ class NArray
     end
   end
 
+  # :nodoc:
   # delete rows/columns
   def delete_at(*args)
     if args.size > self.rank
@@ -93,7 +123,10 @@ class NArray
     self[*ind]
   end
 
-# Statistics
+  #
+  # Calculates the mean along _ranks_.
+  #
+
   def mean(*ranks)
     if integer?
       a = self.to_type(NArray::DFLOAT)
@@ -103,6 +136,10 @@ class NArray
     a = NArray.ref(a)
     a.sum(*ranks) / (rank_total(*ranks))
   end
+
+  #
+  # Calculates the standard deviation along _ranks_.
+  #
 
   def stddev(*ranks)
     if integer?
@@ -119,6 +156,10 @@ class NArray
     end
   end
 
+  #
+  # Calculates the root mean square along _ranks_.
+  #
+
   def rms(*ranks)
     if integer?
       a = self.to_type(NArray::DFLOAT)
@@ -133,6 +174,10 @@ class NArray
       NMath::sqrt( (a**2).sum(*ranks)/n )
     end
   end
+
+  #
+  # Calculates the root mean square deviation along _ranks_.
+  #
 
   def rmsdev(*ranks)
     if integer?
@@ -149,6 +194,11 @@ class NArray
     end
   end
 
+  #
+  # Calculates the median along _rank_ dimensions, all dimensions are assumed if
+  # the parameter is omitted.
+  #
+
   def median(rank=nil)
     shape = self.shape
     rank = shape.size-1 if rank==nil
@@ -161,8 +211,13 @@ class NArray
     end
   end
 
+  #
+  # Set Normally distributed random values with a mean of zero and a dispersion
+  # one. (Box-Muller)
+  #
+  # Valid only for float and complex types.
+  #
 
-# Normal distributed random number;  valid for floating point types
   def randomn
     size = self.size
     case type = self.typecode
@@ -203,6 +258,10 @@ class NArray
   end
   #alias randomn! randomn
 
+  #
+  # Fill array with random values between 0 <= x < max using MT19337.
+  #
+
   def randomn!
     self[]= random
     self
@@ -211,56 +270,133 @@ class NArray
   #SFloatOne = NArray.sfloat(1).fill!(1)
 end
 
+#
+# NArray-aware replacement for the module Math in the standard library.
+#
 
 module NMath
+
+  #
+  # Pi, see Math::PI in the standard library.
+  #
   PI = Math::PI
+
+  #
+  # e, see Math::E in the standard library.
+  #
+
   E = Math::E
+
+  #
+  # Floating point reciprocal of _x_.
+  #
 
   def recip x
     1/x.to_f
   end
 
-# Trigonometric function
+  #
+  # Cosecant of _x_.
+  #
+
   def csc x
     1/sin(x)
   end
+
+  #
+  # Hyperbolic cosecant of _x_.
+  #
+
   def csch x
     1/sinh(x)
   end
+
+  #
+  # Arccosecant of _x_.
+  #
+
   def acsc x
     asin(1/x.to_f)
   end
+
+  #
+  # Hyperbolic arccosecant of _x_.
+  #
+
   def acsch x
     asinh(1/x.to_f)
   end
 
+  #
+  # Secant of _x_.
+  #
+
   def sec x
     1/cos(x)
   end
+
+  #
+  # Hyperbolic secant of _x_.
+  #
+
   def sech x
     1/cosh(x)
   end
+
+  #
+  # Arcsecant of _x_.
+  #
+
   def asec x
     acos(1/x.to_f)
   end
+
+  #
+  # Hyperbolic arcsecant of _x_.
+  #
+
   def asech x
     acosh(1/x.to_f)
   end
 
+  #
+  # Cotangent of _x_.
+  #
+
   def cot x
     1/tan(x)
   end
+
+  #
+  # Hyperbolic cotangent of _x_.
+  #
+
   def coth x
     1/atanh(x)
   end
+
+  #
+  # Arccotangent of _x_.
+  #
+
   def acot x
     atan(1/x.to_f)
   end
+
+  #
+  # Hyperbolic arccotangent of _x_.
+  #
+
   def acoth x
     atanh(1/x.to_f)
   end
 
-# Statistics
+  #
+  # Calculates the covariance.
+  #
+  # FIX: Does not work correctly
+  #
+
   def covariance(x,y,*ranks)
     x = NArray.to_na(x) unless x.kind_of?(NArray)
     x = x.to_type(NArray::DFLOAT) if x.integer?
@@ -277,8 +413,18 @@ module NMath
   module_function :covariance
 end
 
+#
+# FFTW module
+#
+# FIX: Should be in separate library?
+#
 
 module FFTW
+
+  #
+  # Convolution via FFT.
+  #
+
   def convol(a1,a2)
     n1x,n1y = a1.shape
     n2x,n2y = a2.shape

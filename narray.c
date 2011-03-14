@@ -14,7 +14,10 @@
 #include "narray_local.h"
 
 /* global variables within this module */
-VALUE cNArray, cNArrayScalar, cComplex;
+VALUE cNArray;
+VALUE cNArrayScalar;
+
+VALUE cComplex;
 
 ID na_id_beg, na_id_end, na_id_exclude_end;
 ID na_id_minus, na_id_abs, na_id_power;
@@ -1240,22 +1243,53 @@ void
     rb_define_method(cNArray, "count_true", na_count_true, 0);
     rb_define_method(cNArray, "mask", na_aref_mask, 1);
 
+    /* Version of the NArray library. */
     rb_define_const(cNArray, "NARRAY_VERSION", rb_str_new2(NARRAY_VERSION));
+
+    /* Typecode for byte arrays. */
     rb_define_const(cNArray, "BYTE", INT2FIX(NA_BYTE));
+
+    /* Typecode for short integer (32-bit) arrays. */
     rb_define_const(cNArray, "SINT", INT2FIX(NA_SINT));
+
+    /* Typecode for long integer (64-bit) arrays. */
     rb_define_const(cNArray, "LINT", INT2FIX(NA_LINT));
+
+    /* Typecode for integer (64-bit) arrays. */
     rb_define_const(cNArray, "INT",  INT2FIX(NA_LINT));
+
+    /* Typecode for single-precision floating point arrays. */
     rb_define_const(cNArray, "SFLOAT", INT2FIX(NA_SFLOAT));
+
+    /* Typecode for double-precision floating point arrays. */
     rb_define_const(cNArray, "DFLOAT", INT2FIX(NA_DFLOAT));
+
+    /* Typecode for floating point (double-precision) arrays. */
     rb_define_const(cNArray, "FLOAT",  INT2FIX(NA_DFLOAT));
+
+    /* Typecode for single-precision complex floating point arrays. */
     rb_define_const(cNArray, "SCOMPLEX", INT2FIX(NA_SCOMPLEX));
+
+    /* Typecode for double-precision complex floating point arrays. */
     rb_define_const(cNArray, "DCOMPLEX", INT2FIX(NA_DCOMPLEX));
+
+    /* Typecode for complex floating point (double-precision) arrays. */
     rb_define_const(cNArray, "COMPLEX",  INT2FIX(NA_DCOMPLEX));
+
+    /* Typecode for ruby object arrays. */
     rb_define_const(cNArray, "ROBJ", INT2FIX(NA_ROBJ));
+
+    /* Typecode for ruby object arrays. */
     rb_define_const(cNArray, "OBJECT", INT2FIX(NA_ROBJ));
+
+    /* Typecode for arrays without any contents. */
     rb_define_const(cNArray, "NONE", INT2FIX(NA_NONE));
+
+    /* Number of dimensions treated as data, the rest as a multi-dimensional array. */
     rb_define_const(cNArray, "CLASS_DIMENSION", INT2FIX(0));
+
 #ifdef WORDS_BIGENDIAN
+    /* Endianness of the platform, mixed-endian is currently not supported. */
     rb_define_const(cNArray, "ENDIAN",  INT2FIX(1));
 #else
 #ifdef DYNAMIC_ENDIAN	/* not supported yet */

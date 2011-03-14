@@ -285,7 +285,9 @@ static int
   return status;
 }
 
-
+/*
+ * Computes the LU factorization in place.
+ */
 static VALUE
  na_lu_fact_bang(VALUE self)
 { 
@@ -328,7 +330,9 @@ static VALUE
   return rb_funcall(cNMatrixLU,na_id_new,2,self,piv);
 }
 
-
+/*
+ * Returns LU factorization.
+ */
 static VALUE
  na_lu_fact(VALUE self)
 {
@@ -471,6 +475,7 @@ na_shape_max2(int ndim, int *shape, int n1, int *shape1, int n2, int *shape2)
 }
 
 
+/* Back-substitution. */
 static VALUE
 na_lu_solve(VALUE self, volatile VALUE other)
 {
@@ -525,7 +530,7 @@ na_lu_solve(VALUE self, volatile VALUE other)
   return obj;
 }
 
-
+/* Create NMatrixLU factorization from a NMatrix lu and a NVector pivot. */
 static VALUE
 na_lu_init(VALUE self, VALUE lu, VALUE piv)
 {

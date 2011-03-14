@@ -3,10 +3,21 @@
 #
 
 #
-# ------ NMatrix ------
+# Subclass of NArray.
 #
+# - First 2 dimensions are used as Matrix.
+# - Residual dimensions are treated as Multi-dimensional array.
+# - The order of Matrix dimensions is opposite from the notation of
+#   mathematics:  a_ij => a[j,i].
+#
+
 class NMatrix < NArray
+  # Number of dimensions treated as data, the rest as a multi-dimensional array.
   CLASS_DIMENSION = 2
+
+  #
+  # Element-wise addition of another NMatrix.
+  #
 
   def +(other)
     case other
@@ -20,6 +31,10 @@ class NMatrix < NArray
     raise TypeError,"Illegal operation: NMatrix + %s" % other.class
   end
 
+  #
+  # Element-wise subtraction of another NMatrix.
+  #
+
   def -(other)
     case other
     when NMatrix
@@ -31,6 +46,14 @@ class NMatrix < NArray
     end
     raise TypeError,"Illegal operation: NMatrix - %s" % other.class
   end
+
+  #
+  # Depending on _other_,
+  #
+  # - NMatrix: matrix-matrix multiplication.
+  # - NVector: matrix-vector multiplication.
+  # - NArray, Array or Numeric: element-wise multiplication.
+  #
 
   def *(other)
     case other
@@ -56,6 +79,13 @@ class NMatrix < NArray
     end
   end
 
+  #
+  # Depending on _other_,
+  #
+  # - NMatrix: Solve system by LU factorization and then back-substitution.
+  # - NArray, Array or Numeric: element-wise multiplication.
+  #
+
   def /(other)
     case other
     when NMatrix
@@ -77,6 +107,10 @@ class NMatrix < NArray
     end
   end
 
+  #
+  # Matrix exponential, only supports integer powers.
+  #
+
   def **(n)
     case n
     when Integer
@@ -95,6 +129,7 @@ class NMatrix < NArray
     end
   end
 
+  # :nodoc:
   def coerce_rev(other,id)
     case id
     when :*
@@ -116,9 +151,17 @@ class NMatrix < NArray
       [other.class, id.id2name]
   end
 
+  #
+  # Computes the matrix inverse.
+  #
+
   def inverse
     self.lu.solve( NMatrix.new(self.typecode, *self.shape).fill!(0).unit )
   end
+
+  #
+  # Transpose Matrix dimensions the if argument is omitted.
+  #
 
   def transpose(*arg)
     if arg.size==0
@@ -127,6 +170,10 @@ class NMatrix < NArray
       super
     end
   end
+
+  #
+  # Replaces the diagonal values with _val_ (default 1).
+  #
 
   def diagonal!(val=1)
     shp = self.shape
@@ -142,9 +189,17 @@ class NMatrix < NArray
     self
   end
 
+  #
+  # Returns a copy with the diagonal values set to _val_.
+  #
+
   def diagonal(val)
     self.dup.diagonal!(val)
   end
+
+  #
+  # Replace the diagonal values with 1.
+  #
 
   def unit
     diagonal!
@@ -156,10 +211,19 @@ end # class NMatrix
 
 
 #
-# ------ NVector ------
+# Subclass of NArray.
 #
+# - First 1 dimension is used as Vector.
+# - Residual dimensions are treated as Multi-dimensional array.
+#
+
 class NVector < NArray
+  # Number of dimensions treated as data, the rest as a multi-dimensional array.
   CLASS_DIMENSION = 1
+
+  #
+  # Element-wise addition of another NVector.
+  #
 
   def +(other)
     case other
@@ -173,6 +237,10 @@ class NVector < NArray
     raise TypeError,"Illegal operation: NVector + %s" % other.class
   end
 
+  #
+  # Element-wise subtraction of another NVector.
+  #
+
   def -(other)
     case other
     when NVector
@@ -184,6 +252,14 @@ class NVector < NArray
     end
     raise TypeError,"Illegal operation: NVector - %s" % other.class
   end
+
+  #
+  # Depending on _other_,
+  #
+  # - NMatrix: vector-matrix multiplication.
+  # - NVector: inner product.
+  # - NArray or Numeric: element-wise multiplication.
+  #
 
   def *(other)
     case other
@@ -204,6 +280,13 @@ class NVector < NArray
     end
   end
 
+  #
+  # Depending on _other_,
+  #
+  # - NMatrix: Solve system by LU factorization and then back-substitution.
+  # - NArray or Numeric: element-wise multiplication.
+  #
+
   def /(other)
     case other
     when NMatrix
@@ -223,6 +306,12 @@ class NVector < NArray
     end
   end
 
+  #
+  # Element-wise exponentiation.
+  #
+  # FIX: Only supports n = 2.
+  #
+
   def **(n)
     if n==2
       self*self
@@ -231,6 +320,7 @@ class NVector < NArray
     end
   end
 
+  # :nodoc:
   def coerce_rev(other,id)
     case id
     when :*

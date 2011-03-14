@@ -751,6 +751,7 @@ for i in data
   name=bsname
   print <<EOM
 
+/* NMath replacement for Math.#{name} */
 static VALUE na_math_#{bsname}(VALUE obj, VALUE x)
 { return na_math_func(x,#{name}Funcs); }
 EOM
