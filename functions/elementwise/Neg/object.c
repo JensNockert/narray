@@ -1,0 +1,1 @@
+*output = rb_funcall(*input_1, na_id_minus, 0);

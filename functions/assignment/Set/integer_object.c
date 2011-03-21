@@ -1,0 +1,1 @@
+*input_1 = NUM2INT(*input_2);

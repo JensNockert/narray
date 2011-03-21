@@ -1,0 +1,1 @@
+*input_1 = rb_complex_new(input_2->r,input_2->i);

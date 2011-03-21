@@ -1,0 +1,1 @@
+*output = (*input_1 != 0 && *input_2 != 0) ? 1 : 0;

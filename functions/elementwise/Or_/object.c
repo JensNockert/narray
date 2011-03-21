@@ -1,0 +1,1 @@
+*output = (RTEST(*input_1) || RTEST(*input_2)) ? 1 : 0;

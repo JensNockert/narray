@@ -1,0 +1,1 @@
+*output = rb_funcall(*output, '/', 1, *input_1);

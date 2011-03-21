@@ -1,0 +1,1 @@
+pow#CC(output, input_1, input_2);

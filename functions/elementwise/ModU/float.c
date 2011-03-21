@@ -1,0 +1,1 @@
+*output = fmod(*output, *input_1);

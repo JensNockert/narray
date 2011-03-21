@@ -1,0 +1,1 @@
+*output = RTEST(rb_equal(*input_1, *input_2)) ? 1 : 0;

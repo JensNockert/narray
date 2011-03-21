@@ -1,0 +1,1 @@
+*input_1 = rb_float_new(*input_2);

@@ -34,22 +34,9 @@ def create_conf_h(file)
   hfile.close
 end
 
-if RUBY_VERSION < '1.8'
-  alias __install_rb :install_rb
-  def install_rb(mfile, dest, srcdir = nil)
-    __install_rb(mfile, dest, srcdir)
-    archdir = dest.sub(/sitelibdir/,"sitearchdir").sub(/rubylibdir/,"archdir")
-    path = ['$(srcdir)/narray.h','narray_config.h']
-    path << ['libnarray.a'] if /cygwin|mingw/ =~ RUBY_PLATFORM
-    for f in path
-      mfile.printf "\t@$(RUBY) -r ftools -e 'File::install(ARGV[0], ARGV[1], 0644, true)' %s %s\n", f, archdir
-    end
-  end
-else
-  $INSTALLFILES = [['narray.h', '$(archdir)'], ['narray_config.h', '$(archdir)']] 
-  if /cygwin|mingw/ =~ RUBY_PLATFORM
-	 $INSTALLFILES << ['libnarray.a', '$(archdir)']
-  end
+$INSTALLFILES = [['ext/narray.h', '$(archdir)'], ['ext/narray_config.h', '$(archdir)']] 
+if /cygwin|mingw/ =~ RUBY_PLATFORM
+ $INSTALLFILES << ['libnarray.a', '$(archdir)']
 end
 
 if /cygwin|mingw/ =~ RUBY_PLATFORM
@@ -74,17 +61,6 @@ end
 #  --with-fftw-lib=path
 #dir_config("fftw")
 
-srcs = %w(
-narray
-na_array
-na_func
-na_index
-na_random
-na_op
-na_math
-na_linalg
-)
-
 header = "stdint.h"
 unless have_header(header)
   header = "sys/types.h"
@@ -103,15 +79,7 @@ have_type("uint32_t", header)
 #have_func("sincos")
 #have_func("asinh")
 
-#if have_header("fftw.h")
-#  if have_library("fftw", "fftwnd_create_plan")
-#    srcs.push "na_fftw"
-#  else
-#    $defs.delete "-DHAVE_FFTW_H"
-#  end
-#end
+$objs = Dir.glob('ext/*.c').map { |x| x.gsub(/\.c$/, '.o') }
 
-$objs = srcs.collect{|i| i+".o"}
-
-create_conf_h("narray_config.h")
+create_conf_h("ext/narray_config.h")
 create_makefile("narray")

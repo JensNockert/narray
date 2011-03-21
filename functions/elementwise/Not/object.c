@@ -1,0 +1,1 @@
+*output = RTEST(*input_1) ? 0 : 1;

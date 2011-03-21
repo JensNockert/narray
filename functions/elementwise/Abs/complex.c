@@ -1,0 +1,1 @@
+*output = hypot(input_1->r, input_1->i);

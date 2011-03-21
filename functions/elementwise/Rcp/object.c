@@ -1,0 +1,1 @@
+*output = rb_funcall(INT2FIX(1), na_id_div, 1, *input_1);

@@ -1,0 +1,1 @@
+*output = atan2(*input_1, *input_2);

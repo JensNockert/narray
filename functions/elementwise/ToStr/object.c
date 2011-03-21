@@ -1,0 +1,1 @@
+*output = rb_obj_as_string(*input_1);
