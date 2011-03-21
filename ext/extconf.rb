@@ -63,7 +63,7 @@ def create_conf_h(file)
 end
 
 
-$objs = Dir.glob('*.c').map { |x| x.gsub(/\.c$/, '.o') }
+$objs = Dir.glob('*.c').map { |x| x.gsub(/\.c$/, '.o') } + ['na_op.o', 'na_math.o']
 
 create_conf_h("narray_config.h")
 create_makefile("narray")
