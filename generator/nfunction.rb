@@ -48,11 +48,15 @@ module NGenerator
         
         @prototype << ", int counter, int counter_stride"
       when :sort
-        @prototype << "int #{@name}(int count"
+        @prototype << "int #{@name}("
+        
+        temp = []
         
         @parameters.each_with_index do |x, i|
-          @prototype << ", #{x.type} * input_#{i + 1}"
+          temp << "#{x.type} * input_#{i + 1}"
         end
+        
+        @prototype << temp.join(', ')
       when :mask
         @prototype << "void #{@name}(int count, #{@output.type} * output, int output_stride"
         
