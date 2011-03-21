@@ -222,6 +222,6 @@ NFunctions = [
   }
 ].map { |f| NGenerator::Function.new(f) }
 
-File.open('ext/na_math.c', 'w') do |f|
-  f.puts ERB.new(File.read('math.erb.c')).result(binding)
+File.open('na_math.c', 'w') do |f|
+  f.puts ERB.new(File.read('templates/math.erb.c')).result(binding)
 end

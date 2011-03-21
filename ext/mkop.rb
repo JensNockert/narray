@@ -454,6 +454,6 @@ NOps = [
   }
 ].map { |f| NGenerator::Function.new(f) }
 
-File.open('ext/na_op.c', 'w') do |f|
-  f.puts ERB.new(File.read('op.erb.c')).result(binding)
+File.open('na_op.c', 'w') do |f|
+  f.puts ERB.new(File.read('templates/op.erb.c')).result(binding)
 end
